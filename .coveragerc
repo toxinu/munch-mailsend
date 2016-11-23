@@ -1,0 +1,9 @@
+[run]
+omit =
+    */apps.py
+    */admin.py
+    */migrations/*
+    */tests/*
+    */management/commands/*
+    */utils/dkim/*
+source = mailsend
