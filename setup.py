@@ -29,10 +29,10 @@ setup(
         _find_packages('munch_mailsend_tests'),
     long_description=README,
     include_package_data=True,
-    description='Sending mass emails with Django.',
+    description='Sending mass emails with Munch.',
     author='Geoffrey Lehée',
     author_email='glehee@oasiswork.fr',
-    url='https://git.owk.cc/crunchmail/django-mailsend',
+    url='https://github/crunchmail/munch-mailsend',
     install_requires=[],
     extras_require={
         'tests': [
