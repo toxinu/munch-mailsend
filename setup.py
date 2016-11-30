@@ -29,6 +29,7 @@ setup(
         _find_packages('munch_mailsend_tests'),
     long_description=README,
     include_package_data=True,
+    license='GNU AGPLv3',
     description='Sending mass emails with Munch.',
     author='Geoffrey Lehée',
     author_email='glehee@oasiswork.fr',
@@ -50,5 +51,6 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',  # noqa
     ]
 )
