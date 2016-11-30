@@ -1,7 +1,7 @@
-django-mailsend
-===============
+Munch-mailsend
+==============
 
-Sending mass emails with Django.
+Sending mass emails with `munch-core <https://github.com/crunchmail/munch-core>`_.
 
 Developers
 ----------
