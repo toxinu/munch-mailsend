@@ -1,21 +1,16 @@
 import os
-import re
 
 from setuptools import setup
 from setuptools import find_packages
 
-with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
-    README = readme.read()
+base_dir = os.path.dirname(__file__)
 
-os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
+about = {}
+with open(os.path.join(base_dir, "munch_mailsend", "__about__.py")) as f:
+    exec(f.read(), about)
 
-with open('munch_mailsend/__init__.py', 'r') as fd:
-    version = re.search(
-        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-        fd.read(), re.MULTILINE).group(1)
-
-if not version:
-    raise RuntimeError('Cannot find version information')
+with open(os.path.join(base_dir, "README.rst")) as f:
+    long_description = f.read()
 
 
 def _find_packages(name):
@@ -23,17 +18,16 @@ def _find_packages(name):
 
 
 setup(
-    name='munch-mailsend',
-    version=version,
+    name=about["__title__"],
+    version=about["__version__"],
     packages=_find_packages('munch_mailsend') + \
         _find_packages('munch_mailsend_tests'),
-    long_description=README,
-    include_package_data=True,
-    license='GNU AGPLv3',
-    description='Sending mass emails with Munch.',
-    author='Geoffrey Lehée',
-    author_email='glehee@oasiswork.fr',
-    url='https://github/crunchmail/munch-mailsend',
+    long_description=long_description,
+    license=about["__version__"],
+    description=about["__summary__"],
+    author=about["__author__"],
+    author_email=about["__email__"],
+    url=about["__uri__"],
     install_requires=[],
     extras_require={
         'tests': [
