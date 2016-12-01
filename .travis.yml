@@ -17,7 +17,7 @@ before_install:
   - export PYTHONPATH=/cache/lib/python3.4/site-packages:$PYTHONPATH
   - export PATH=/cache/bin:$PATH
 install:
-  - pip install git+https://github.com/crunchmail/munch-core.git@master
+  - pip install munch-core
   - pip install --process-dependency-links -e .[tests]
 before_script:
   - flake8
