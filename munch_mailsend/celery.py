@@ -4,9 +4,13 @@ from celery.signals import worker_shutdown
 from celery.signals import celeryd_after_setup
 from django.conf import settings
 
-from munch.core.utils import get_worker_type
+from munch.core.utils import get_worker_types
+from munch.core.utils import available_worker_types
 from munch.core.celery import catch_exception
 from munch.core.celery import munch_tasks_router
+
+available_worker_types += ['mx', 'router']
+worker_types = get_worker_types()
 
 
 def add_queues():
@@ -34,9 +38,7 @@ def register_tasks():
 def configure_worker(instance, **kwargs):
     from .models import Worker
 
-    worker_type = get_worker_type()
-
-    if worker_type in ['mx', 'all']:
+    if any([t in worker_types for t in ['mx', 'all']]):
         from .tasks import send_email  # noqa
         sys.stdout.write('[mailsend-app] Registering worker as MX...')
         if not settings.MAILSEND.get('SMTP_WORKER_EHLO_AS') or \
@@ -57,11 +59,11 @@ def configure_worker(instance, **kwargs):
         queue = settings.MAILSEND.get(
             'MX_WORKER_QUEUE_RETRY_PREFIX', '').format(ip=worker.ip)
         munch_tasks_router.register_to_queue(queue)
-    if worker_type in ['router', 'all']:
+    if any([t in worker_types for t in ['router', 'all']]):
         from .tasks import route_envelope  # noqa
         sys.stdout.write('[mailsend-app] Registering worker as ROUTER...')
         munch_tasks_router.register_as_worker('router')
-    if worker_type in ['gc', 'all']:
+    if any([t in worker_types for t in ['gc', 'all']]):
         from .tasks import ping_workers  # noqa
         from .tasks import dispatch_queued  # noqa
         from .tasks import check_disabled_workers  # noqa
@@ -74,9 +76,8 @@ def configure_worker(instance, **kwargs):
 def worker_shutdown(*args, **kwargs):
     from .models import Worker
     sender = kwargs.get('sender')
-    worker_type = get_worker_type()
 
-    if worker_type in ['mx', 'all']:
+    if any([t in worker_types for t in ['mx', 'all']]):
         sys.stdout.write('[mailsend-app] Disabling MX worker instance...')
         workers = Worker.objects.filter(
             ip=settings.MAILSEND.get('SMTP_WORKER_SRC_ADDR'), name=sender)

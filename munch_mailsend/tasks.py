@@ -19,7 +19,7 @@ from munch.core.mail.utils import extract_domain
 from munch.core.utils.tasks import task_autoretry
 from munch.core.mail.models import AbstractMailStatus
 from munch.core.mail.exceptions import SoftFailure
-from munch.core.utils import get_worker_type
+from munch.core.utils import get_worker_types
 
 from .utils import save_timer
 from .utils import ExponentialBackOff
@@ -32,6 +32,7 @@ from .relay import MxSmtpRelay
 
 log = logging.getLogger(__name__)
 conn = get_redis_connection()
+worker_types = get_worker_types()
 
 
 @task_autoretry(
@@ -115,8 +116,7 @@ def send_email(
             record_new_status(
                 AbstractMailStatus.DROPPED, identifier, headers, reply, ehlo)
 
-    worker_type = get_worker_type()
-    if worker_type not in ['mx', 'all']:
+    if not any([t in worker_types for t in ['mx', 'all']]):
         countdown = 60 * 10
         log.error(
             '[{}] [worker:{}] Received "send_email" task but '
