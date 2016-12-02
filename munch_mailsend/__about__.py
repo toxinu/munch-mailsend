@@ -7,7 +7,7 @@ __title__ = "munch-mailsend"
 __summary__ = "Sending mass emails with Munch."
 __uri__ = "https://github.com/crunchmail/munch-mailsend"
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __author__ = u"Crunchmail"
 __email__ = "dev@crunchmail.com"
