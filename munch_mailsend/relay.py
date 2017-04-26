@@ -1,5 +1,5 @@
 from ssl import SSLContext
-from ssl import PROTOCOL_TLSv1_2  # TODO: Switch to PROTOCOL_TLS with Py3.5
+from ssl import PROTOCOL_SSLv23  # TODO: Switch to PROTOCOL_TLS with Py3.5.3+
 
 from gevent.socket import create_connection
 from django.conf import settings
@@ -27,12 +27,8 @@ class MxSmtpRelay(MxSmtpRelayBase):
         kwargs.setdefault('ehlo_as', self.ehlo)
         kwargs.setdefault('socket_creator', _socket_creator)
 
-        if settings.MAILSEND.get('TLS'):
-            ssl_context = SSLContext(PROTOCOL_TLSv1_2)
-            ssl_context.load_cert_chain(
-                settings.MAILSEND.get('TLS').get('certfile'),
-                keyfile=settings.MAILSEND.get('TLS').get('keyfile'))
-            kwargs.setdefault('context', ssl_context)
+        ssl_context = SSLContext(PROTOCOL_SSLv23)
+        kwargs.setdefault('context', ssl_context)
 
         for k, v in settings.MAILSEND.get('RELAY_TIMEOUTS', {}).items():
             kwargs.setdefault(k, v)
