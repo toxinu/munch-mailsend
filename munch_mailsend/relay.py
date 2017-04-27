@@ -1,3 +1,5 @@
+import logging
+
 from ssl import SSLContext
 from ssl import PROTOCOL_SSLv23  # TODO: Switch to PROTOCOL_TLS with Py3.5.3+
 
@@ -5,6 +7,8 @@ from gevent.socket import create_connection
 from django.conf import settings
 from django.utils.module_loading import import_string
 from slimta.relay.smtp.mx import MxSmtpRelay as MxSmtpRelayBase
+
+log = logging.getLogger(__name__)
 
 
 class RelayStartupFatalError(Exception):
@@ -77,4 +81,9 @@ class MxSmtpRelay(MxSmtpRelayBase):
         envelope.message = envelope.message.decode('utf-8').replace(
             '\n', '\r\n').encode('utf-8')
         # Attempt delivery as usual
+        log.info('[{}] Attempting delivery from <{}> to <{}> ({})'.format(
+            envelope.headers.get(
+                settings.TRANSACTIONAL['X_MESSAGE_ID_HEADER'], 'unknown'),
+            envelope.sender, ', '.join(envelope.recipients),
+            envelope.headers['Subject']))
         return super().attempt(envelope, *args, **kwargs)
